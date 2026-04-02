@@ -1,52 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>T-shirts - Sai Fashion Zone</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-          href="/static/style.css">
-</head>
-<body>
+{% block content %}
 
-<header>
-    <h1>Sai Fashion Zone</h1>
-</header>
+<h2>T-Shirts Collection</h2>
 
-<nav>
-    <a href="/">Home</a>
-    <a href="/shirts">Shirts</a>
-    <a href="/pants">Pants</a>
-    <a href="/tshirts">T-Shirts</a>
-    <a href="/nightpants">Night Pants</a>
-</nav>
+<div class="product-list">
 
-<div class="products">
+{% for tshirt in tshirts %}
 
-    <h2>T-Shirts Collection</h2>
+<div class="product">
 
-    <div class="product-list">
+    <img src="{{ url_for('static',
+            filename='images/' ~ tshirt.image) }}">
 
-        <div class="product">
+    <h3>{{ tshirt.name }}</h3>
 
-           <img src="/static/images/Tshirts.jpeg" width="150">
-
-            <h3>Cotton T-Shirt</h3>
-            <p>Price: ₹799</p>
-        </div>
-
-        <div class="product">
-            <h3>Polo Shirt</h3>
-            <p>Price: ₹599</p>
-        </div>
-
-        <div class="product">
-            <h3>Crew shirt</h3>
-            <p>Price: ₹699</p>
-        </div>
-
-    </div>
+    <p>Price: ₹{{ tshirt.price }}</p>
 
 </div>
 
-</body>
-</html>
+{% endfor %}
+
+</div>
+
+{% endblock %}

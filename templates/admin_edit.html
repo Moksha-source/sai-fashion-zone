@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Edit Product</h2>
+
+    <form method="POST" style="background:white; padding:20px; width:300px; border-radius:8px;">
+        <label>Name</label><br>
+        <input type="text" name="name" value="{{ product.name }}" required><br><br>
+
+        <label>Price</label><br>
+        <input type="number" name="price" value="{{ product.price }}" required><br><br>
+
+        <label>Image filename</label><br>
+        <input type="text" name="image" value="{{ product.image }}"><br><br>
+
+        <label>Category</label><br>
+        <select name="category">
+            <option value="shirts"     {% if product.category == "shirts" %}selected{% endif %}>Shirts</option>
+            <option value="pants"      {% if product.category == "pants" %}selected{% endif %}>Pants</option>
+            <option value="tshirts"    {% if product.category == "tshirts" %}selected{% endif %}>T-Shirts</option>
+            <option value="nightpants" {% if product.category == "nightpants" %}selected{% endif %}>Night Pants</option>
+        </select><br><br>
+
+        <button type="submit">Save Changes</button>
+        <a href="/admin">Cancel</a>
+    </form>
+{% endblock %}

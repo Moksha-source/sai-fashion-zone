@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Admin Panel</h2>
+    <a href="/admin/add">+ Add New Product</a>
+
+    <table border="1" cellpadding="10" style="margin-top:20px; background:white;">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Image</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>₹{{ p.price }}</td>
+            <td>{{ p.image }}</td>
+            <td>{{ p.category }}</td>
+            <td>
+                <a href="/admin/edit/{{ p.id }}">Edit</a> |
+                <a href="/admin/delete/{{ p.id }}"
+                   onclick="return confirm('Delete {{ p.name }}?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,6 +1,51 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///fashion.db"
+
+db = SQLAlchemy(app)
+
+# --- Model ---
+
+class Product(db.Model):
+    id       = db.Column(db.Integer, primary_key=True)
+    name     = db.Column(db.String(100), nullable=False)
+    price    = db.Column(db.Integer, nullable=False)
+    image    = db.Column(db.String(100), nullable=True)
+    category = db.Column(db.String(50), nullable=False)
+
+# --- Seed Data ---
+
+def seed_data():
+    if Product.query.first():
+        return  # already seeded, skip
+
+    products = [
+        # Shirts
+        Product(name="Formal Shirt",       price=799,  image="formal_shirt.jpeg",  category="shirts"),
+        Product(name="Printed Shirt",      price=699,  image="printed_shirt.jpeg", category="shirts"),
+        Product(name="Check Shirt",        price=899,  image="check_shirt.jpeg",   category="shirts"),
+
+        # Pants
+        Product(name="Formal Pant",        price=1199, image="pant1.jpeg",         category="pants"),
+        Product(name="Cotton Pant",        price=899,  image="pant2.jpeg",         category="pants"),
+        Product(name="Slim Fit Pant",      price=999,  image="pant3.jpeg",         category="pants"),
+
+        # T-Shirts
+        Product(name="Round Neck T-Shirt", price=499,  image="Tshirts.jpeg",       category="tshirts"),
+
+        # Night Pants
+        Product(name="Night Pant",         price=599,  image="nightpant.jpeg",     category="nightpants"),
+        Product(name="Joggers",            price=649,  image="nightpant2.jpeg",    category="nightpants"),
+        Product(name="Shorts",             price=299,  image="shorts.jpeg",        category="nightpants"),
+    ]
+
+    db.session.add_all(products)
+    db.session.commit()
+    print("Database seeded!")
+
+# --- Routes ---
 
 @app.route("/")
 def home():
@@ -8,41 +53,70 @@ def home():
 
 @app.route("/shirts")
 def shirts():
-
-    shirts_data = [
-        {
-            "name": "Formal Shirt",
-            "price": 799,
-            "image": "formal_shirt.jpeg"
-        },
-        {
-            "name": "Printed Shirt",
-            "price": 699,
-            "image": "printed_shirt.jpeg"
-        },
-        {
-            "name": "Check Shirt",
-            "price": 899,
-            "image": "check_shirt.jpeg"
-        }
-    ]
-
-    return render_template(
-        "shirts.html",
-        shirts=shirts_data
-    )
+    items = Product.query.filter_by(category="shirts").all()
+    return render_template("shirts.html", shirts=items)
 
 @app.route("/pants")
 def pants():
-    return  render_template("pants.html")
+    items = Product.query.filter_by(category="pants").all()
+    return render_template("pants.html", pants=items)
 
 @app.route("/tshirts")
 def tshirts():
-    return render_template("tshirts.html")
+    items = Product.query.filter_by(category="tshirts").all()
+    return render_template("tshirts.html", tshirts=items)
 
 @app.route("/nightpants")
 def nightpants():
-    return render_template("nightpants.html")
+    items = Product.query.filter_by(category="nightpants").all()
+    return render_template("nightpants.html", nightpants=items)
+
+
+# -----Admin Routes -----
+
+@app.route("/admin")
+def admin():
+    products = Product.query.all()
+    return render_template("admin.html", products=products)
+
+@app.route("/admin/add", methods=["GET", "POST"])
+def admin_add():
+    if request.method == "POST":
+        product = Product(
+            name     = request.form["name"],
+            price    = int(request.form["price"]),
+            image    = request.form["image"],
+            category = request.form["category"]
+        )
+        db.session.add(product)
+        db.session.commit()
+        return redirect(url_for("admin"))
+    return render_template("admin_add.html")
+
+
+@app.route("/admin/edit/<int:id>", methods=["GET", "POST"])
+def admin_edit(id):
+    product = Product.query.get_or_404(id)
+    if request.method == "POST":
+        product.name     = request.form["name"]
+        product.price    = int(request.form["price"])
+        product.image    = request.form["image"]
+        product.category = request.form["category"]
+        db.session.commit()
+        return redirect(url_for("admin"))
+    return render_template("admin_edit.html", product=product)
+
+
+@app.route("/admin/delete/<int:id>")
+def admin_delete(id):
+    product = Product.query.get_or_404(id)
+    db.session.delete(product)
+    db.session.commit()
+    return redirect(url_for("admin"))
+
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()   # creates fashion.db if it doesn't exist
+        seed_data()       # fills it with your products
     app.run(debug=True)

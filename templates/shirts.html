@@ -1,47 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Shirts - Sai Fashion Zone</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% block content %}
 
-<header>
-    <h1>Sai Fashion Zone</h1>
-</header>
+<h2>Shirts Collection</h2>
 
-<nav>
-    <a href="/">Home</a>
-    <a href="/shirts">Shirts</a>
-    <a href="/pants">Pants</a>
-    <a href="/tshirts">T-Shirts</a>
-    <a href="/nightpants">Night Pants</a>
-</nav>
+<div class="product-list">
 
-<div class="products">
+{% for shirt in shirts %}
 
-    <h2>Shirts Collection</h2>
+<div class="product">
 
-    <div class="product-list">
+    <img src="{{ url_for('static',
+        filename='images/' ~ shirt.image) }}">
 
-    {% for shirt in shirts %}
+    <h3>{{ shirt.name }}</h3>
 
-        <div class="product">
+    <p>Price: ₹{{ shirt.price }}</p>
 
-            <img src="{{ url_for('static',
-         filename='images/' + shirt.image) }}">
-
-            <h3>{{ shirt.name }}</h3>
-
-            <p>Price: ₹{{ shirt.price }}</p>
-
-        </div>
-
-    {% endfor %}
-
-    </div>
 </div>
 
-</body>
-</html>
+{% endfor %}
+
+</div>
+
+{% endblock %}

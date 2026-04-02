@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Add New Product</h2>
+
+    <form method="POST" style="background:white; padding:20px; width:300px; border-radius:8px;">
+        <label>Name</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Price</label><br>
+        <input type="number" name="price" required><br><br>
+
+        <label>Image filename (e.g. shirt.jpeg)</label><br>
+        <input type="text" name="image"><br><br>
+
+        <label>Category</label><br>
+        <select name="category">
+            <option value="shirts">Shirts</option>
+            <option value="pants">Pants</option>
+            <option value="tshirts">T-Shirts</option>
+            <option value="nightpants">Night Pants</option>
+        </select><br><br>
+
+        <button type="submit">Add Product</button>
+        <a href="/admin">Cancel</a>
+    </form>
+{% endblock %}

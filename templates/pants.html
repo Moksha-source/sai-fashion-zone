@@ -1,49 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pants - Sai Fashion Zone</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-          href="/static/style.css">
-</head>
-<body>
+{% block content %}
 
-<header>
-    <h1>Sai Fashion Zone</h1>
-</header>
+<h2>Pants Collection</h2>
 
-<nav>
-    <a href="/">Home</a>
-    <a href="/shirts">Shirts</a>
-    <a href="/pants">Pants</a>
-    <a href="/tshirts">T-Shirts</a>
-    <a href="/nightpants">Night Pants</a>
-</nav>
+<div class="product-list">
 
-<div class="products">
+{% for pant in pants %}
 
-    <h2>Pants Collection</h2>
+<div class="product">
 
-    <div class="product-list">
+    <img src="{{ url_for('static',
+             filename='images/' ~ pant.image) }}">
 
-        <div class="product">
-            <h3>Cargo Pants</h3>
-            <p>Price: ₹799</p>
-        </div>
+    <h3>{{ pant.name }}</h3>
 
-        <div class="product">
-            <h3>Bell-Bottoms</h3>
-            <p>Price: ₹999</p>
-        </div>
-
-        <div class="product">
-            <h3>Culottess</h3>
-            <p>Price: ₹699</p>
-        </div>
-
-    </div>
+    <p>Price: ₹{{ pant.price }}</p>
 
 </div>
 
-</body>
-</html>
+{% endfor %}
+
+</div>
+
+{% endblock %}

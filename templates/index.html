@@ -1,50 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sai Fashion Zone</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="/static/style.css">
+{% block content %}
 
-</head>
-<body>
+<h2>Our Products</h2>
 
-<header>
-    <h1>Sai Fashion Zone</h1>
-</header>
+<div class="product-list">
 
-<nav>
-    <a href="/">Home</a>
+<div class="product">
     <a href="/shirts">Shirts</a>
+</div>
+
+<div class="product">
     <a href="/pants">Pants</a>
+</div>
+
+<div class="product">
     <a href="/tshirts">T-Shirts</a>
+</div>
+
+<div class="product">
     <a href="/nightpants">Night Pants</a>
-</nav>
-
-<div class="products">
-
-    <h2>Our Products</h2>
-
-    <div class="product-list">
-
-        <div class="product">
-            <a href="/tshirts">T-shirts</a>
-        </div>
-
-        <div class="product">
-            <a href ="/shirts">Shirts</a>
-        </div>
-
-        <div class="product">
-            <a href="/pants">Pants</a>
-        </div>
-
-        <div class="product">
-            <a href="/nightpants">Night Pants</a>
-        </div>
-
-    </div>
+</div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}
