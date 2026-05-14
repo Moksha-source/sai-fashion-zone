@@ -1,10 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.secret_key = "mysecretkey"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///fashion.db"
 
 db = SQLAlchemy(app)
+
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = "static/images"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # --- Model ---
 
@@ -14,10 +21,12 @@ class Product(db.Model):
     price    = db.Column(db.Integer, nullable=False)
     image    = db.Column(db.String(100), nullable=True)
     category = db.Column(db.String(50), nullable=False)
-
+    description = db.Column(db.String(300), nullable=True)
+    
 # --- Seed Data ---
 
 def seed_data():
+
     if Product.query.first():
         return  # already seeded, skip
 
@@ -49,12 +58,28 @@ def seed_data():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    products = Product.query.limit(4).all()
+    return render_template("index.html",products=products)
 
 @app.route("/shirts")
 def shirts():
-    items = Product.query.filter_by(category="shirts").all()
-    return render_template("shirts.html", shirts=items)
+
+    page = request.args.get("page", 1, type=int)
+
+    pagination = Product.query.filter_by(
+        category="shirts"
+    ).paginate(
+        page=page,
+        per_page=6
+    )
+
+    shirts = pagination.items
+
+    return render_template(
+        "shirts.html",
+        shirts=shirts,
+        pagination=pagination
+    )
 
 @app.route("/pants")
 def pants():
@@ -71,26 +96,96 @@ def nightpants():
     items = Product.query.filter_by(category="nightpants").all()
     return render_template("nightpants.html", nightpants=items)
 
+@app.route("/product/<int:id>")
+def product_details(id):
+    product = Product.query.get_or_404(id)
+
+    return render_template(
+        "product_details.html",
+        product=product
+    )
+
+@app.route("/search")
+def search():
+
+    query = request.args.get("query")
+    category = request.args.get("category")
+
+    products = Product.query
+
+    if query:
+        products = products.filter(
+            Product.name.ilike(f"%{query}%")
+        )
+
+    if category and category != "All":
+        products = products.filter(
+            Product.category == category
+        )
+
+
+    products = products.all()
+
+    return render_template(
+        "index.html",
+        products=products
+    )
+
+@app.route("/delete/<int:id>")
+def delete_product(id):
+    product = Product.query.get_or_404(id)
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return redirect("/admin")
+
 
 # -----Admin Routes -----
 
 @app.route("/admin")
 def admin():
+
+    if "user" not in session:
+        return redirect("/login")
+    
     products = Product.query.all()
     return render_template("admin.html", products=products)
 
 @app.route("/admin/add", methods=["GET", "POST"])
 def admin_add():
+
     if request.method == "POST":
+
+        name = request.form["name"]
+        price = int(request.form["price"])
+        category = request.form["category"]
+
+        file = request.files["image"]
+
+        filename = ""
+
+        if file and file.filename != "":
+            filename = secure_filename(file.filename)
+
+            file.save(
+                os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    filename
+                )
+            )
+
         product = Product(
-            name     = request.form["name"],
-            price    = int(request.form["price"]),
-            image    = request.form["image"],
-            category = request.form["category"]
+            name     = name,
+            price    = price,
+            image    = filename,
+            category = category
         )
         db.session.add(product)
         db.session.commit()
+
         return redirect(url_for("admin"))
+    
     return render_template("admin_add.html")
 
 
@@ -114,6 +209,34 @@ def admin_delete(id):
     db.session.commit()
     return redirect(url_for("admin"))
 
+
+# ----Login of Admin ------
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    # if already logged in --> go to admin
+    if "user" in session:
+        return redirect("/admin")
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        # simple check (we'll improve later)
+        if username == "admin" and password == "1234":
+            session["user"] = username
+            return redirect("/admin")
+
+    return render_template("login.html")
+
+# ----logout of admin -----
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect("/")
 
 if __name__ == "__main__":
     with app.app_context():

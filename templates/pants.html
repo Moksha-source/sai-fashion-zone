@@ -8,14 +8,17 @@
 
 {% for pant in pants %}
 
-<div class="product">
+<div class="product-card">
 
-    <img src="{{ url_for('static',
-             filename='images/' ~ pant.image) }}">
+    <div class="image-container">
+        <img src="{{ url_for('static',
+            filename='images/' ~ pant.image) }}">
+    </div>
 
-    <h3>{{ pant.name }}</h3>
-
-    <p>Price: ₹{{ pant.price }}</p>
+    <div class="product-info">
+        <h3>{{ pant.name }}</h3>
+        <p class="price">₹{{ pant.price }}</p>
+    </div>
 
 </div>
 

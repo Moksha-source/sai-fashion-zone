@@ -8,15 +8,17 @@
 
 {% for nightpant in nightpants %}
 
-<div class="product">
+<div class="product-card">
 
-    <img src="{{ url_for('static',
-            filename='images/' ~ nightpant.image) }}"
-         alt="{{ nightpant.name }}">
+    <div class="image-container">
+        <img src="{{ url_for('static',
+            filename='images/' ~ nightpant.image) }}">
+    </div>
 
-    <h3>{{ nightpant.name }}</h3>
-
-    <p>Price: ₹{{ nightpant.price }}</p>
+    <div class="product-info">
+        <h3>{{ nightpant.name }}</h3>
+        <p class="price">₹{{ nightpant.price }}</p>
+    </div>
 
 </div>
 

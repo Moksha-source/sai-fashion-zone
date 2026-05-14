@@ -5,20 +5,62 @@
 
     <link rel="stylesheet"
           href="/static/style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <header>
-    <h1>Sai Fashion Zone</h1>
+
+    <div class="logo-container">
+
+        <img src="{{ url_for('static',
+        filename='images/logo.png') }}"
+        alt="SFZ Logo">
+
+        <h1>Sai Fashion Zone</h1>
+
+    </div>
+
 </header>
 
 <nav>
-    <a href="/">Home</a>
-    <a href="/shirts">Shirts</a>
-    <a href="/pants">Pants</a>
-    <a href="/tshirts">T-Shirts</a>
-    <a href="/nightpants">Night Pants</a>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/shirts">Shirts</a>
+        <a href="/pants">Pants</a>
+        <a href="/tshirts">T-Shirts</a>
+        <a href="/nightpants">Night Pants</a>
+
+    </div>
+    
+    <form action="/search" method="GET">
+        <input type="text"
+               name="query" 
+               placeholder="Search products">
+        <select name = "category">
+
+            <option value = "All">All</option>
+            <option value="shirts">Shirts</option>
+            <option value="pants">pants</option>
+            <option value="tshirts">T-shirt</option>
+            <option value="nightpants">Night pants</option>
+
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <div class ="auth-links">
+        {% if session.get("user") %}
+            <a href="/admin">Admin</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+        {% endif %}
+    </div>
+    
+
 </nav>
 
 <div class="products">
@@ -28,5 +70,63 @@
 
 </div>
 
+
+
+<footer>
+
+    <div class="footer-container">
+
+        <div class="footer-brand">
+            <h2>Sai Fashion Zone</h2>
+
+            <p>
+                Elevate your style with modern fashion trends.
+            </p>
+        </div>
+
+        <div class="footer-links">
+
+            <h3>Quick Links</h3>
+
+            <a href="/">Home</a>
+            <a href="/shirts">Shirts</a>
+            <a href="/pants">Pants</a>
+            <a href="/tshirts">T-Shirts</a>
+
+        </div>
+
+        <div class="footer-contact">
+
+            <h3>Contact</h3>
+
+            <p><strong>Email:</strong><br> 
+                saifashionzone@gmail.com
+            </p>
+
+            <p><strong>Phone:</strong><br> 
+                +91 7815980074
+            </p>
+
+            <p class="contact-item">
+                <strong>Address:</strong><br>
+
+                #17-28, Old Checkpost,<br>
+
+                Renigunta - 517520,<br>
+
+                Tirupati Dt., Andhra Pradesh.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        © 2026 Sai Fashion Zone. All Rights Reserved.
+
+    </div>
+
+</footer>
 </body>
 </html>

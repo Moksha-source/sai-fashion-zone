@@ -2,26 +2,97 @@
 
 {% block content %}
 
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+    <div class="hero-text">
+
+        <h1>Upgrade Your Style</h1>
+
+        <p>
+            Discover the latest fashion trends at
+            Sai Fashion Zone.
+        </p>
+
+        <a href="/shirts" class="hero-btn">
+            Shop Now
+        </a>
+
+    </div>
+
+    <div class="hero-image">
+
+        <img src="{{ url_for('static', filename='images/modern.png') }}">
+
+    </div>
+
+</section>
+
+
 <h2>Our Products</h2>
+
+<div class="category-grid">
+
+    <a href="/shirts" class="category-card">
+        <img src="/static/images/printed_shirt.jpeg">
+        <h3>Shirts</h3>
+    </a>
+
+    <a href="/pants" class="category-card">
+        <img src="/static/images/pant1.jpeg">
+        <h3>Pants</h3>
+    </a>
+
+    <a href="/tshirts" class="category-card">
+        <img src="/static/images/Tshirts.jpeg">
+        <h3>T-Shirts</h3>
+    </a>
+
+    <a href="/nightpants" class="category-card">
+        <img src="/static/images/nightpant.jpeg">
+        <h3>Night Pants</h3>
+    </a>
+
+</div>
+
+{% if products %}
+
+<h2>Featured products</h2>
 
 <div class="product-list">
 
-<div class="product">
-    <a href="/shirts">Shirts</a>
+    {% for product in products %}
+
+    <div class="product-card">
+
+        <div class="image-container">
+            <img src="{{ url_for('static',
+                filename='images/' ~ product.image) }}">
+        </div>
+
+        <div class="product-info">
+
+            <h3>{{ product.name }}</h3>
+
+            <p>₹{{ product.price }}</p>
+
+            <a href="/product/{{ product.id }}">
+                View Details
+            </a>
+
+            <button onclick="addToSelection('{{ product.name }}')">
+                Save Collection
+            </button>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
 </div>
 
-<div class="product">
-    <a href="/pants">Pants</a>
-</div>
-
-<div class="product">
-    <a href="/tshirts">T-Shirts</a>
-</div>
-
-<div class="product">
-    <a href="/nightpants">Night Pants</a>
-</div>
-
-</div>
+{% endif %}
 
 {% endblock %}
