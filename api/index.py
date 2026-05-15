@@ -211,7 +211,11 @@ def logout():
     session.pop("user", None)
     return redirect("/")
 
-# Initialize database
-with app.app_context():
-    db.create_all()
-    seed_data()
+# Initialize database (only if not in serverless environment)
+try:
+    with app.app_context():
+        db.create_all()
+        seed_data()
+except Exception as e:
+    # In serverless, database might not be writable
+    print(f"Database initialization skipped: {e}")
