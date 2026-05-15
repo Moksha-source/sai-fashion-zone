@@ -238,8 +238,10 @@ def logout():
     session.pop("user", None)
     return redirect("/")
 
+# Initialize database
+with app.app_context():
+    db.create_all()   # creates fashion.db if it doesn't exist
+    seed_data()       # fills it with your products
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()   # creates fashion.db if it doesn't exist
-        seed_data()       # fills it with your products
     app.run(debug=True)
